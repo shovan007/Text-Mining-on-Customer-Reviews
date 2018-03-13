@@ -1,0 +1,93 @@
+main.py
+    def main():
+        Entry point for script. Creates 'Application' class instance
+        and executes 'exec_' method on it (start Qt main loop)
+
+    class Appliction(QtWidgets.QApplication):
+        def __init__(self):
+            'Appliction' class's constructor. Invokes constructor of parent class,
+            create instance of 'MainWindow'
+
+    class SavedResults(QtWidgets.QDialog):
+        def __init__(self):
+            'SavedResults' class's constructor. Initialize UI and some
+            internal valiables, establish connection to MongoDB, setup signals to slots.
+
+
+        def show_results(Class):
+            Class method. Creates 'SavedResults' dialog instance, search saved results in DB
+            and fill QTreeWidget with results of search.
+
+        def return_item(self, item, column):
+            Qt slot. Executed when user activate item in QTreeWidget. Saves activated item
+            and accepts dialog.
+
+    class MainWindow(QtWidgets.QMainWindow):
+        def __init__(self):
+            'MainWindow' class's constructor. Initialize UI and some
+            internal vars, setup signals to slots, shows windows and loads data from JSON files.
+
+        def get_filtered_metadata(self, preprocessed=False):
+            Returns metadata filtered according values in UI controls. If preprocessed==True,
+            use preprocessed metadata as source.
+
+        def submit(self):
+            Qt slot, executed when user click 'Submit' button. Calls functions from template_qt.py
+            to build wordcloud and histogram.
+
+        def search_by_keyword(self):
+            Qt slot, executed when user click 'Search' button. Builds wordcloud for keyword.
+
+        def show_people(self):
+            Qt slot, executed when user click 'Show people' button. Builds wordcloud for keyword.
+            Builds wordcloud for people selected in UI.
+
+        def save_results(self):
+            Qt slot, executed when user click 'Save current result' button.
+            Saves current results to DB.
+
+        def show_results(self):
+            Qt slot, executed when user click 'Show saved results...' button.
+            Execute SavedResults.show_results class method to show SavedResults dialog.
+
+        def load_data(self):
+            Loads data from JSON files, preprocess metadata and fills 'filter_product' and
+            'filter_brand' controls.
+
+        def update_brands(self):
+            Updates 'filter_brand' control depending on 'filter_product' value.
+
+        def set_message(self, msg, color=None):
+            Shows message in status bar above image view areas (wordcloud and histogram).
+
+        def get_sentiments(self):
+            Convinient function to get santiments form UI.
+
+template_qt.py
+    
+    def wordcloud_qt(dataframe, dataframereview):
+        Builds wordcloud and returns PNG image as buffer.
+
+    def wordcloud_keyword(dataframe):
+        Builds wordcloud for keyword and returns PNG image as buffer.
+
+    def wordcloud_people(s_min, s_max, dataframe, dataframereview):
+        Builds wordcloud and people PNG image as buffer.
+
+    def histogram_qt(s_min, s_max, dataframe, dataframereview):
+        Builds histogram and returns PNG image as buffer.
+
+image_view.py
+
+    class ImageView(QtWidgets.QWidget):
+        def __init__(self, parent=None):
+            'ImageView' class's constructor.
+
+        def setImage(self, image):
+            Set image var to 'image'
+
+        def clear(self):
+            Clear current image
+
+        def paintEvent(self, event):
+            'paintEvent' event handler. Do painting of image.
